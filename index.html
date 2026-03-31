@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>معجم أبو يوسف التعليمي</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#08090f;--bg2:#0e0f1a;--bg3:#12131f;
+  --gold:#c9a84c;--gold2:#e8c96a;--gold3:#f5e4a8;
+  --white:#f0ead8;--muted:#5a5870;
+  --border:rgba(201,168,76,.18);--border2:rgba(201,168,76,.08);
+  --card:#0e101c;
+  --r1:#c0392b;--r2:rgba(192,57,43,.12);
+  --g1:#27ae60;--g2:rgba(39,174,96,.12);
+  --b1:#2980b9;--b2:rgba(41,128,185,.12);
+  --p1:#8e44ad;--p2:rgba(142,68,173,.12);
+  --o1:#d35400;--o2:rgba(211,84,0,.12);
+  --t1:#16a085;--t2:rgba(22,160,133,.12);
+}
+html,body{height:100%;background:var(--bg);color:var(--white);font-family:Tahoma,Arial,sans-serif;overflow:hidden;}
+body{display:flex;flex-direction:column;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(201,168,76,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.025) 1px,transparent 1px);
+  background-size:32px 32px;}
+
+.screen{display:none;flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:90px;position:relative;z-index:1;}
+.screen.active{display:block;}
+.screen::-webkit-scrollbar{width:3px;}
+.screen::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px;}
+
+/* TAB BAR */
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:9999;display:flex;background:var(--bg2);border-top:1px solid var(--border);box-shadow:0 -4px 24px rgba(0,0,0,.7);}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 2px 7px;cursor:pointer;color:var(--muted);font-size:8px;font-weight:700;gap:2px;border-top:2px solid transparent;transition:all .2s;}
+.tab.active{color:var(--gold);border-top-color:var(--gold);}
+.tab-ic{font-size:16px;}
+
+/* HOME */
+.hero{padding:22px 16px 18px;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border2);}
+.hero::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(201,168,76,.08),transparent 60%);pointer-events:none;z-index:0;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:99px;padding:4px 14px;font-size:10px;color:var(--gold);margin-bottom:10px;}
+.hero-dot{width:5px;height:5px;border-radius:50%;background:var(--gold2);animation:pd 2s ease-in-out infinite;}
+@keyframes pd{0%,100%{opacity:.3;}50%{opacity:1;}}
+.hero-title{font-size:24px;font-weight:900;color:var(--gold2);line-height:1.3;margin-bottom:4px;text-shadow:0 0 24px rgba(201,168,76,.3);}
+.hero-sub{font-size:11px;color:var(--muted);}
+
+/* SUBJECT GRID */
+.subj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px;}
+.subj-card{background:var(--card);border-radius:16px;padding:16px 12px;text-align:center;border:1px solid var(--border2);cursor:pointer;transition:all .2s;position:relative;overflow:hidden;animation:su .4s ease both;}
+@keyframes su{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.subj-card:active{transform:scale(.97);}
+.subj-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;}
+.subj-card:hover::before{opacity:1;}
+.sc-ic{font-size:38px;margin-bottom:8px;display:block;}
+.sc-name{font-size:12px;font-weight:700;color:var(--white);}
+.sc-count{font-size:9px;color:var(--muted);margin-top:3px;}
+.sc-badge{position:absolute;top:8px;left:8px;font-size:8px;padding:2px 7px;border-radius:99px;font-weight:700;}
+
+/* CONTENT HEADER */
+.ch{position:sticky;top:0;z-index:50;background:var(--bg);padding:12px 16px 10px;border-bottom:1px solid var(--border2);}
+.ch-back{background:rgba(201,168,76,.1);border:1px solid var(--border);color:var(--gold);padding:5px 12px;border-radius:8px;font-family:Tahoma,Arial,sans-serif;font-size:11px;font-weight:700;cursor:pointer;margin-bottom:8px;}
+.ch-row{display:flex;align-items:center;gap:10px;}
+.ch-icon{font-size:28px;}
+.ch-title{font-size:17px;font-weight:900;color:var(--gold2);}
+.ch-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+
+.content-body{padding:12px 16px;}
+
+/* LESSON CARD */
+.lesson-card{background:var(--card);border-radius:14px;margin-bottom:10px;border:1px solid var(--border2);overflow:hidden;animation:su .3s ease both;}
+.lc-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background .2s;}
+.lc-header:hover{background:rgba(201,168,76,.04);}
+.lc-num{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.lc-title{font-size:13px;font-weight:700;color:var(--white);flex:1;}
+.lc-arr{color:var(--gold);font-size:16px;transition:transform .3s;}
+.lesson-card.open .lc-arr{transform:rotate(90deg);}
+.lc-body{display:none;padding:2px 14px 14px;border-top:1px solid var(--border2);}
+.lesson-card.open .lc-body{display:block;animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;}to{opacity:1;}}
+
+.aya-box{background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:10px;padding:12px;margin:10px 0;text-align:center;}
+.aya-text{font-size:17px;color:var(--gold3);line-height:2;font-weight:700;}
+.lesson-text{font-size:12px;line-height:1.95;color:#9090b0;margin-top:8px;}
+.lesson-text strong{color:var(--gold2);}
+.lesson-text .hl{color:var(--gold);}
+
+.svg-wrap{background:rgba(0,0,0,.4);border:1px solid var(--border2);border-radius:10px;margin:10px 0;overflow:hidden;}
+.svg-lbl{font-size:9px;color:var(--muted);text-align:center;padding:5px;border-top:1px solid var(--border2);}
+
+/* TIP */
+.tip{background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:8px;display:flex;gap:8px;}
+.tip-text{font-size:11px;color:#d4b96a;line-height:1.7;}
+
+/* QUIZ */
+.quiz-btn-wrap{padding:8px 0 4px;text-align:center;}
+.quiz-trigger{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;border:none;border-radius:10px;padding:8px 20px;font-family:Tahoma,Arial,sans-serif;font-size:11px;font-weight:900;cursor:pointer;}
+.quiz-area{margin-top:10px;background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:12px;padding:12px;}
+.q-text{font-size:13px;font-weight:700;color:var(--white);margin-bottom:10px;line-height:1.6;}
+.q-opts{display:flex;flex-direction:column;gap:6px;}
+.q-opt{background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:9px;padding:10px 12px;font-family:Tahoma,Arial,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:right;color:var(--white);transition:all .2s;}
+.q-opt:hover{border-color:var(--border);background:rgba(201,168,76,.06);}
+.q-opt.correct{background:rgba(39,174,96,.15);border-color:rgba(39,174,96,.5);color:#6effa0;}
+.q-opt.wrong{background:rgba(192,57,43,.15);border-color:rgba(192,57,43,.5);color:#ff8a8a;}
+.q-opt.dis{cursor:default;pointer-events:none;}
+.q-result{margin-top:8px;padding:8px 12px;border-radius:9px;font-size:12px;font-weight:700;display:none;}
+.q-result.ok{background:rgba(39,174,96,.12);color:#6effa0;border:1px solid rgba(39,174,96,.3);}
+.q-result.no{background:rgba(192,57,43,.12);color:#ff8a8a;border:1px solid rgba(192,57,43,.3);}
+.q-next{margin-top:8px;background:rgba(201,168,76,.15);border:1px solid var(--border);color:var(--gold);padding:8px 16px;border-radius:9px;font-family:Tahoma,Arial,sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:none;width:100%;}
+
+/* HIKMA CARD */
+.hikma-card{background:var(--card);border:1px solid var(--border2);border-radius:14px;margin-bottom:10px;padding:16px;animation:su .3s ease both;}
+.hk-arabic{font-size:15px;color:var(--gold3);line-height:2;text-align:center;background:rgba(201,168,76,.05);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
+.hk-num{display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;font-size:10px;font-weight:900;padding:2px 10px;border-radius:99px;margin-bottom:8px;}
+.hk-meaning{font-size:12px;color:#9090b0;line-height:1.9;}
+.hk-meaning strong{color:var(--gold2);}
+
+/* TERM CARD */
+.term-card{background:var(--card);border:1px solid var(--border2);border-radius:12px;margin-bottom:8px;padding:14px;display:flex;gap:12px;align-items:flex-start;animation:su .3s ease both;}
+.term-en{font-size:13px;font-weight:900;color:var(--gold);direction:ltr;text-align:left;min-width:90px;}
+.term-ar{font-size:12px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.term-def{font-size:11px;color:var(--muted);line-height:1.7;}
+
+/* PROVERB */
+.proverb-card{background:var(--card);border-radius:14px;margin-bottom:10px;border:1px solid var(--border2);padding:16px;animation:su .3s ease both;}
+.pv-num{font-size:9px;color:var(--gold);margin-bottom:6px;font-weight:700;}
+.pv-text{font-size:16px;font-weight:900;color:var(--gold2);line-height:1.7;margin-bottom:10px;text-align:center;}
+.pv-mean{font-size:12px;color:#9090b0;line-height:1.8;}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div class="screen active" id="scHome">
+  <div class="hero">
+    <div class="hero-badge"><span class="hero-dot"></span> المنهج الشامل 2026</div>
+    <div class="hero-title">📚 معجم أبو يوسف<br>التعليمي</div>
+    <div class="hero-sub">٩ رسائل · دروس + أسئلة + رسوم توضيحية</div>
+  </div>
+  <div class="subj-grid" id="subjGrid"></div>
+</div>
+
+<!-- SUBJECT SCREENS (generated) -->
+<div class="screen" id="scSubject">
+  <div class="ch" id="subjectCh">
+    <button class="ch-back" onclick="goHome()">← رجوع</button>
+    <div class="ch-row">
+      <span class="ch-icon" id="subjectIcon"></span>
+      <div><div class="ch-title" id="subjectTitle"></div><div class="ch-sub" id="subjectSub"></div></div>
+    </div>
+  </div>
+  <div class="content-body" id="subjectBody"></div>
+</div>
+
+<!-- TABBAR -->
+<div class="tabbar">
+  <div class="tab active" id="tabHome" onclick="goHome()"><span class="tab-ic">🏠</span><span>الرئيسية</span></div>
+  <div class="tab" id="tabQ" onclick="openSubj('quran')"><span class="tab-ic">📖</span><span>القرآن</span></div>
+  <div class="tab" id="tabF" onclick="openSubj('fiqh')"><span class="tab-ic">🕌</span><span>الفقه</span></div>
+  <div class="tab" id="tabN" onclick="openSubj('nahj')"><span class="tab-ic">✨</span><span>نهج</span></div>
+  <div class="tab" id="tabM" onclick="openSubj('more')"><span class="tab-ic">⋯</span><span>المزيد</span></div>
+</div>
+
+<script>
+// ══ DATA ══
+const SUBJECTS = {
+  quran:{name:'تفسير سورة آل عمران',icon:'📖',color:'#c9a84c',bg:'rgba(201,168,76,.1)',border:'rgba(201,168,76,.3)',sub:'٨ آيات مع التفسير والأسئلة',type:'lessons',
+    items:[
+      {title:'الآية: الم',aya:'الـم',text:'حروف مقطعة في أوائل بعض السور. <strong>قيل:</strong> هي سر بين الله ورسوله، <strong>وقيل:</strong> هي للتحدي والإعجاز؛ أي أن هذا القرآن مكوّن من نفس حروف لغتكم التي تتكلمون بها ومع ذلك تعجزون عن الإتيان بمثله.',
+        q:{q:'ما المعنى المشهور للحروف المقطعة مثل "الم"؟',opts:['أسماء للسور','سر بين الله ورسوله وللتحدي والإعجاز','أرقام للترتيب','لا معنى لها'],c:1,exp:'قيل هي سر بين الله ورسوله، وقيل للتحدي والإعجاز بأن العرب عاجزون عن الإتيان بمثله رغم أنه من حروفهم.'}},
+      {title:'الآية: الله لا إله إلا هو الحي القيوم',aya:'اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ',
+        text:'<strong>الحي:</strong> هو الذي له الحياة الدائمة الذاتية التي لا يعتريها موت أو فناء.<br><strong>القيوم:</strong> القائم بتدبير شؤون خلقه، الغني عن العالمين والكل مفتقر إليه.',
+        svg:`<svg viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;background:#07080f;">
+          <circle cx="150" cy="50" r="40" fill="none" stroke="rgba(201,168,76,.4)" stroke-width="1.5" stroke-dasharray="6,3"/>
+          <circle cx="150" cy="50" r="25" fill="rgba(201,168,76,.08)" stroke="rgba(201,168,76,.3)" stroke-width="1.5"/>
+          <text x="150" y="55" text-anchor="middle" font-family="Tahoma" font-size="11" fill="#e8c96a" font-weight="bold">الله</text>
+          <text x="62" y="28" text-anchor="middle" font-family="Tahoma" font-size="9" fill="#c9a84c">الحي</text>
+          <text x="62" y="40" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#5a5870">حياة دائمة لا تفنى</text>
+          <line x1="90" y1="38" x2="128" y2="46" stroke="rgba(201,168,76,.3)" stroke-width="1"/>
+          <text x="238" y="28" text-anchor="middle" font-family="Tahoma" font-size="9" fill="#c9a84c">القيوم</text>
+          <text x="238" y="40" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#5a5870">قائم بشؤون الخلق</text>
+          <line x1="210" y1="38" x2="172" y2="46" stroke="rgba(201,168,76,.3)" stroke-width="1"/>
+          <text x="150" y="90" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#5a5870">الكل مفتقر إليه — وهو الغني عن الجميع</text>
+        </svg>`,svgLbl:'صفتا الله: الحي والقيوم',
+        q:{q:'ما معنى "القيوم"؟',opts:['القادر على كل شيء','القائم بتدبير شؤون خلقه الغني عنهم','الدائم الحياة','العالم بكل شيء'],c:1,exp:'القيوم هو القائم بتدبير شؤون خلقه، الغني عن العالمين والكل محتاج إليه.'}},
+      {title:'الآية: نزّل عليك الكتاب بالحق',aya:'نَزَّلَ عَلَيْكَ الْكِتَابَ بِالْحَقِّ مُصَدِّقًا لِّمَا بَيْنَ يَدَيْهِ وَأَنزَلَ التَّوْرَاةَ وَالْإِنجِيلَ',
+        text:'القرآن نزل بالصدق والثبات ليؤكد الكتب السماوية السابقة في أصل التوحيد والدين. <strong>التوراة</strong> نزلت على موسى (ع) و<strong>الإنجيل</strong> نزل على عيسى (ع).',
+        q:{q:'ما الكتاب الذي نزل على موسى عليه السلام؟',opts:['الإنجيل','القرآن','التوراة','الزبور'],c:2,exp:'التوراة نزلت على موسى (ع)، والإنجيل على عيسى (ع)، والقرآن على محمد ﷺ.'}},
+      {title:'الآية: الفرقان',aya:'مِن قَبْلُ هُدًى لِّلنَّاسِ وَأَنزَلَ الْفُرْقَانَ',
+        text:'الله جعل الكتب السابقة هداية للناس في زمانها، وأنزل <strong>"الفرقان"</strong> وهو القرآن الكريم الذي صار الميزان الفاصل بين الحق والباطل وبين الحلال والحرام إلى يوم القيامة.',
+        q:{q:'ما معنى "الفرقان" في الآية الكريمة؟',opts:['كتاب التاريخ','القرآن الكريم الفاصل بين الحق والباطل','التوراة','الدعاء'],c:1,exp:'الفرقان هو القرآن الكريم؛ لأنه يفرق بين الحق والباطل وبين الحلال والحرام إلى يوم القيامة.'}},
+      {title:'الآية: علم الله المطلق',aya:'إِنَّ اللَّهَ لَا يَخْفَىٰ عَلَيْهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ',
+        text:'تقرير لعلم الله المطلق المحيط بكل صغيرة وكبيرة. لا تغيب عن علمه ذرة في باطن الأرض ولا مجرة في أعالي السماء. <strong>وهذا يبعث في قلب المؤمن المراقبة لله والاطمئنان.</strong>',
+        q:{q:'ما الأثر الذي يبعثه هذا الاعتقاد في قلب المؤمن؟',opts:['الخوف الشديد','المراقبة لله والاطمئنان لعلمه بحاله','الغرور','اليأس'],c:1,exp:'العلم بأن الله يعلم كل شيء يبعث في القلب المراقبة لله والطمأنينة بأن الله عالم بحاله.'}},
+      {title:'الآية: التصوير في الأرحام',aya:'هُوَ الَّذِي يُصَوِّرُكُمْ فِي الْأَرْحَامِ كَيْفَ يَشَاءُ ۚ لَا إِلَهَ إِلَّا هُوَ الْعَزِيزُ الْحَكِيمُ',
+        text:'الله هو المصمم والمهندس الأول؛ هو الذي يحدد ملامح وشكل الجنين وتفاصيله وهو في بطن أمه. <strong>وهو المتفرد بهذا الخلق بعزته وحكمته.</strong>',
+        q:{q:'من الذي يحدد شكل وملامح الجنين في الرحم؟',opts:['الطبيب','الوراثة فقط','الله العزيز الحكيم وحده','الصدفة'],c:2,exp:'الله وحده هو الذي يصور الجنين في الرحم كيف يشاء بعزته وحكمته، وهو المتفرد بهذا الخلق.'}},
+      {title:'الآية: المحكم والمتشابه',aya:'مِنْهُ آيَاتٌ مُّحْكَمَاتٌ هُنَّ أُمُّ الْكِتَابِ وَأُخَرُ مُتَشَابِهَاتٌ',
+        text:'القرآن ينقسم لـ<strong>محكم</strong> (واضح الدلالة لا يقبل التأويل) وهو أصل الدين، و<strong>متشابه</strong> (يحتمل معاني ويُرد للمحكم). الراسخون في العلم يفهمون مراده ويسلمون لله فيه.',
+        q:{q:'ما معنى "المحكم" في القرآن؟',opts:['الآيات التي لا تُقرأ','الآيات الواضحة الدلالة التي هي أصل الدين','الآيات المنسوخة','الآيات القصيرة'],c:1,exp:'المحكم هو الآيات الواضحة الدلالة التي لا تقبل التأويل، وهي أصل الدين وأم الكتاب.'}},
+      {title:'الآية: دعاء الثبات',aya:'رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِن لَّدُنكَ رَحْمَةً ۚ إِنَّكَ أَنتَ الْوهَّابُ',
+        text:'دعاء الراسخين في العلم بالثبات. القلب سُمي قلباً لتقلبه، فالمؤمن يطلب من <strong>الله الوهاب</strong> أن يحفظ قلبه من الميل عن الحق بعد أن عرفه.',
+        q:{q:'لماذا سُمي القلب "قلباً"؟',opts:['لأنه في وسط الجسم','لأنه لونه أحمر','لكثرة تقلبه بين الأحوال','لأنه يضخ الدم'],c:2,exp:'سُمي قلباً لتقلبه بين الأحوال، ولهذا يدعو المؤمن الله بأن يثبّت قلبه على الحق.'}},
+    ]},
+
+  fiqh:{name:'الفقه — منهاج الصالحين',icon:'🕌',color:'#27ae60',bg:'rgba(39,174,96,.1)',border:'rgba(39,174,96,.3)',sub:'٨ دروس فقهية مع الأسئلة',type:'lessons',
+    items:[
+      {title:'التقليد',text:'يجب على كل <strong>مكلف</strong> (بالغ عاقل) لم يصل لدرجة الاجتهاد أن يقلد مجتهداً جامعاً للشرائط في فروع الدين. التقليد هو العمل مستنداً إلى فتوى المجتهد. <strong>بدونه قد تكون العبادات باطلة.</strong>',
+        q:{q:'على من يجب التقليد؟',opts:['على كل أحد','على المكلف (البالغ العاقل) الذي لم يصل للاجتهاد','على الأطفال فقط','على غير المسلمين'],c:1,exp:'يجب التقليد على المكلف (البالغ العاقل) الذي لم يصل لدرجة الاجتهاد في فروع الدين.'}},
+      {title:'شروط المجتهد الثمانية',text:'يجب أن يتوفر في من يُقلَّد ثمانية شروط: <strong>البلوغ، العقل، الإيمان، الذكورة، طهارة المولد، الاجتهاد، الحياة ابتداءً، والأعلمية على الأحوط وجوباً.</strong>',
+        svg:`<svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;background:#07080f;">
+          <text x="150" y="18" text-anchor="middle" font-family="Tahoma" font-size="10" fill="#27ae60" font-weight="bold">شروط المجتهد الثمانية</text>
+          ${['البلوغ','العقل','الإيمان','الذكورة'].map((s,i)=>`<rect x="${10+i*72}" y="25" width="66" height="20" rx="5" fill="rgba(39,174,96,.12)" stroke="rgba(39,174,96,.3)" stroke-width="1"/><text x="${43+i*72}" y="39" text-anchor="middle" font-family="Tahoma" font-size="9" fill="#6effa0">${s}</text>`).join('')}
+          ${['طهارة المولد','الاجتهاد','الحياة','الأعلمية'].map((s,i)=>`<rect x="${10+i*72}" y="55" width="66" height="20" rx="5" fill="rgba(39,174,96,.12)" stroke="rgba(39,174,96,.3)" stroke-width="1"/><text x="${43+i*72}" y="69" text-anchor="middle" font-family="Tahoma" font-size="9" fill="#6effa0">${s}</text>`).join('')}
+          <text x="150" y="96" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#5a5870">* الأعلمية على الأحوط وجوباً</text>
+        </svg>`,svgLbl:'الشروط الثمانية للمجتهد',
+        q:{q:'كم شرطاً يجب توفرها في المجتهد؟',opts:['خمسة','ستة','سبعة','ثمانية'],c:3,exp:'يجب أن تتوفر ثمانية شروط في المجتهد: البلوغ، العقل، الإيمان، الذكورة، طهارة المولد، الاجتهاد، الحياة ابتداءً، والأعلمية.'}},
+      {title:'طرق ثبوت الاجتهاد',text:'يُعرف المجتهد بثلاث طرق:<br>1. <strong>العلم الوجداني</strong> (الاختبار لمن هو أهل للخبرة).<br>2. <strong>الشياع</strong> المفيد للعلم بين أهل العلم والمتدينين.<br>3. <strong>بينة أهل الخبرة</strong> (شهادة عادلين من أهل الاختصاص).',
+        q:{q:'ما الطرق الثلاثة لمعرفة المجتهد؟',opts:['السماع والرؤية والكتابة','الاختبار والشياع وشهادة أهل الخبرة','التلفزيون والإنترنت والكتب','الرؤيا والكشف والإلهام'],c:1,exp:'تثبت اجتهاد الشخص بالعلم الوجداني (الاختبار)، والشياع المفيد للعلم، وبينة أهل الخبرة (شهادة عادلين متخصصين).'}},
+      {title:'وجوب التعلم',text:'يجب على المكلف تعلم مسائل <strong>الوضوء والصلاة والصوم</strong> التي يبتلي بها عادةً. وإذا شك في حكم مسألة ولم يعرفها، وجب عليه <strong>التعلم أو الاحتياط</strong> قبل العمل.',
+        q:{q:'ماذا يجب على المكلف إذا شك في حكم مسألة؟',opts:['يتركها تماماً','يفعل ما يريد','يتعلمها أو يحتاط قبل العمل','يسأل أصدقاءه'],c:2,exp:'إذا شك في حكم مسألة، يجب عليه التعلم أو الاحتياط قبل العمل حتى لا تكون عبادته باطلة.'}},
+      {title:'النجاسات العشرة',text:'النجاسات العشر هي: البول، الغائط، المني، الميتة، الدم، <strong>الكلب البري، الخنزير البري، الكافر غير الكتابي</strong>، الخمر والمسكر المائع، عرق الإبل الجلالة (على الأحوط).',
+        svg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;background:#07080f;">
+          <text x="150" y="16" text-anchor="middle" font-family="Tahoma" font-size="10" fill="#c0392b" font-weight="bold">النجاسات العشرة</text>
+          ${['البول','الغائط','المني','الميتة','الدم'].map((s,i)=>`<rect x="${8+i*58}" y="24" width="52" height="18" rx="5" fill="rgba(192,57,43,.12)" stroke="rgba(192,57,43,.3)" stroke-width="1"/><text x="${34+i*58}" y="37" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#ff8a8a">${s}</text>`).join('')}
+          ${['الكلب','الخنزير','الكافر','الخمر','عرق الإبل'].map((s,i)=>`<rect x="${8+i*58}" y="52" width="52" height="18" rx="5" fill="rgba(192,57,43,.12)" stroke="rgba(192,57,43,.3)" stroke-width="1"/><text x="${34+i*58}" y="65" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#ff8a8a">${s}</text>`).join('')}
+          <text x="150" y="90" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#5a5870">الأخيرة على الأحوط وجوباً</text>
+        </svg>`,svgLbl:'النجاسات العشرة',
+        q:{q:'كم عدد النجاسات في الفقه الشيعي؟',opts:['سبع','ثماني','تسع','عشر'],c:3,exp:'النجاسات عشر: البول، الغائط، المني، الميتة، الدم، الكلب، الخنزير، الكافر، الخمر، وعرق الإبل الجلالة.'}},
+      {title:'قاعدة انتقال النجاسة',text:'النجاسة <strong>لا تنتقل</strong> من جسم لآخر بمجرد اللمس إلا إذا كانت هناك <strong>"رطوبة مسرية"</strong> (بلل ينتقل). أما إذا كان الجسمان يابسين فلا تنتقل النجاسة.',
+        q:{q:'متى تنتقل النجاسة من جسم لآخر؟',opts:['بمجرد اللمس دائماً','فقط عند وجود رطوبة مسرية','عند التفكير فيها','لا تنتقل أبداً'],c:1,exp:'تنتقل النجاسة فقط عند وجود رطوبة مسرية (بلل ينتقل). أما اليابسان فلا تنتقل بينهما النجاسة.'}},
+      {title:'تطهير الماء (الماء المطلق)',text:'الماء هو المطهر الأساسي، ويشترط أن يكون <strong>مطلقاً</strong> (غير مضاف كالعصير). ماء الإسالة (الكر) يطهر بمرة واحدة. أما <strong>الماء القليل</strong> (الإبريق) فيجب انفصال ماء الغسالة عن المُطهَّر.',
+        q:{q:'ما الشرط الأساسي في الماء المطهِّر؟',opts:['أن يكون بارداً','أن يكون مطلقاً غير مضاف','أن يكون كثيراً','أن يكون مقطراً'],c:1,exp:'يشترط في الماء المطهِّر أن يكون مطلقاً أي غير مضاف كالعصير والماء المعطر وما شابه.'}},
+      {title:'تطهير الأرض (لباطن القدم)',text:'تطهر <strong>باطن القدم والحذاء</strong> بشروط ثلاثة: أن تكون الأرض طاهرة وجافة، أن تزول عين النجاسة بالمشي أو المسح، وأن تكون من <strong>تراب أو رمل أو صخر.</strong>',
+        q:{q:'ما شروط تطهير القدم بالأرض؟',opts:['الأرض طاهرة جافة وتزول النجاسة وتكون من تراب أو رمل أو صخر','أي أرض تكفي','الأرض فقط بلا شروط','يجب الماء ولا تكفي الأرض'],c:0,exp:'ثلاثة شروط: أن تكون الأرض طاهرة وجافة، وأن تزول عين النجاسة بالمشي، وأن تكون من تراب أو رمل أو صخر.'}},
+    ]},
+
+  nahj:{name:'نهج البلاغة',icon:'✨',color:'#8e44ad',bg:'rgba(142,68,173,.1)',border:'rgba(142,68,173,.3)',sub:'٨ حكم من أمير المؤمنين ع',type:'hikam',
+    items:[
+      {arabic:'كُنْ فِي الْفِتْنَةِ كَابْنِ اللَّبُونِ، لَا ظَهْرٌ فَيُرْكَبَ، وَلَا ضَرْعٌ فَيُحْلَبَ',meaning:'في أوقات الفتن والاضطراب، كن كالصغير من الإبل الذي لا يُستغل ظهره للركوب ولا ضرعه للحلب. <strong>أي لا تكن أداة بيد الظالمين.</strong>',q:{q:'ما الدرس من حكمة "كن في الفتنة كابن اللبون"؟',opts:['اهرب من المشاكل','لا تكن أداة بيد الظالمين في الفتن','كن قوياً دائماً','اعتزل الناس'],c:1,exp:'الحكمة تأمر بعدم الانجرار لأن تكون أداة يستغلها الظالمون في وقت الفتنة والاضطراب.'}},
+      {arabic:'أَزْرَى بِنَفْسِهِ مَنِ اسْتَشْعَرَ الطَّمَعَ، وَرَضِيَ بِالذُّلِّ مَنْ كَشَفَ عَنْ ضُرِّهِ',meaning:'التحذير من <strong>الطمع</strong> (يذهب بالكرامة)، ومن <strong>كشف الهموم</strong> لكل أحد، ومن عدم التحكم في اللسان — فكلها تُسقط قيمة الإنسان.',q:{q:'حسب هذه الحكمة، ما الذي يذهب بكرامة الإنسان؟',opts:['الفقر وحده','الطمع وكشف الهموم وإطلاق اللسان','قلة الكلام','كثرة العمل'],c:1,exp:'ثلاثة أشياء تُسقط الكرامة: الطمع، وكشف الهموم لكل أحد، وعدم التحكم في اللسان.'}},
+      {arabic:'الْبُخْلُ عَارٌ، وَالْجُبْنُ مَنْقَصَةٌ، وَالْفَقْرُ يُخرسُ الْفَطِنَ عَنْ حُجَّتِهِ',meaning:'<strong>البخل</strong> عيب مشين، <strong>والجبن</strong> نقيصة، والفقر يضعف تأثير كلام الشخص الذكي ويشعره بالغربة حتى بين أهله.',q:{q:'ما الذي يُخرس الفطن (الذكي) عن حجته حسب الحكمة؟',opts:['الجهل','الكبر','الفقر','الخوف'],c:2,exp:'الفقر هو الذي يخرس الفطن عن حجته، لأن الفقير يشعر بالضعف ولا يُسمع كلامه كما يُسمع كلام الغني.'}},
+      {arabic:'الْعَجْزُ آفَةٌ، وَالصَّبْرُ شَجَاعَةٌ، وَالزُّهْدُ ثَرْوَةٌ، وَالْوَرَعُ جُنَّةٌ، وَنِعْمَ الْقَرِينُ الرِّضَى',meaning:'<strong>العجز</strong> مرض، <strong>الصبر</strong> قمة الشجاعة، <strong>الزهد</strong> غنى حقيقي، <strong>الورع</strong> درع من المعاصي، والرضا خير صاحب.',q:{q:'ما أفضل قرين (صاحب) للإنسان حسب الحكمة؟',opts:['المال','الأصدقاء','الرضا','الصحة'],c:2,exp:'نعم القرين الرضا — الرضا بما قسم الله هو خير صاحب للإنسان في حياته.'}},
+      {arabic:'الصَّدْرُ رِحَابُ الصَّبْرِ، وَالْبَشَاشَةُ حِبَالَةُ الْمَوَدَّةِ',meaning:'ضرورة <strong>سعة الصدر</strong> للصبر، والوجه الضاحك لجذب محبة الناس، وتحمل أخطاء الآخرين <strong>لستر عيوب النفس.</strong>',q:{q:'ما معنى "البشاشة حبالة المودة"؟',opts:['الابتسامة والوجه المشرق يجذب محبة الناس','كثرة الكلام تجلب الأصدقاء','المال يجلب الأحباب','الهدايا تكسب القلوب'],c:0,exp:'البشاشة (الوجه المشرق والابتسامة) هي الشبكة التي تصطاد بها مودة الناس وحبهم.'}},
+      {arabic:'مَنْ كَتَمَ سِرَّهُ كَانَتِ الْخِيَرَةُ بِيَدِهِ',meaning:'من يحفظ أسراره يظل <strong>صاحب القرار والمسيطر</strong> على الموقف. فإذا خرج السر من قلبه فقد سيطرته وأصبح الآخرون يتحكمون فيه.',q:{q:'ما فائدة كتمان السر حسب الحكمة؟',opts:['الشعور بالوحدة','البقاء صاحب القرار والسيطرة على الموقف','إخفاء العيوب','الكسب المادي'],c:1,exp:'من كتم سره ظلت الخيرة (القرار) بيده، فلم يستطع أحد استغلاله أو التحكم فيه.'}},
+      {arabic:'الصَّدَقَةُ دَوَاءٌ مُنْجِحٌ، وَأَعْمَالُ الْعِبَادِ فِي عَاجِلِهِمْ نُصْبُ أَعْيُنِهِمْ فِي آجَالِهِمْ',meaning:'<strong>الصدقة علاج فعّال</strong> للمشاكل والأمراض. وكل فعل في الدنيا (العاجل) سنراه حاضراً أمامنا في الآخرة (الآجل) — فالعمل سجلٌ محفوظ.',q:{q:'ما معنى "العاجل" و"الآجل" في الحكمة؟',opts:['العاجل المستعجل والآجل المتأني','العاجل الدنيا والآجل الآخرة','العاجل الغني والآجل الفقير','العاجل الصغير والآجل الكبير'],c:1,exp:'العاجل هو الدنيا وما نعمله فيها، والآجل هو الآخرة حيث نرى كل أعمالنا أمامنا.'}},
+      {arabic:'إِذَا أَقْبَلَتِ الدُّنْيَا عَلَى أَحَدٍ أَعَارَتْهُ مَحَاسِنَ غَيْرِهِ، وَإِذَا أَدْبَرَتْ سَلَبَتْهُ مَحَاسِنَ نَفْسِهِ',meaning:'تقلّب حال الدنيا؛ <strong>عند الغنى</strong> يرى الناس فيك كل جميل ويُنسب إليك ما ليس لك. <strong>وعند الفقر</strong> ينسون حتى فضائلك الحقيقية.',q:{q:'ما الدرس المستفاد من هذه الحكمة؟',opts:['تجنب الناس دائماً','اجمع أكثر مال ممكن','الدنيا زائلة فلا تنخدع بتقييم الناس لك','الثروة تجلب السعادة'],c:2,exp:'الدنيا غرارة؛ الناس يُحسّنون حالك حين تكون ثرياً وينسون فضلك حين تفتقر، فلا تعتمد على تقييمهم.'}},
+    ]},
+
+  computer:{name:'الحاسوب — التقنيات الأساسية',icon:'💻',color:'#2980b9',bg:'rgba(41,128,185,.1)',border:'rgba(41,128,185,.3)',sub:'٨ دروس تقنية',type:'lessons',
+    items:[
+      {title:'المكونات المادية (Hardware)',text:'الحاسوب يتكون من: <strong>اللوحة الأم (Motherboard)</strong> — العمود الفقري الذي يربط كل شيء. <strong>المعالج (CPU)</strong> — العقل. <strong>الذاكرة (RAM)</strong> — الذاكرة المؤقتة. <strong>وحدة التخزين (HDD/SSD)</strong> — التخزين الدائم.',
+        svg:`<svg viewBox="0 0 300 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;background:#07080f;">
+          <rect x="20" y="15" width="260" height="80" rx="8" fill="rgba(41,128,185,.08)" stroke="rgba(41,128,185,.25)" stroke-width="1.5"/>
+          <text x="150" y="12" text-anchor="middle" font-family="Tahoma" font-size="9" fill="#5a9fd4">اللوحة الأم — Motherboard</text>
+          <rect x="30" y="25" width="55" height="35" rx="5" fill="rgba(41,128,185,.15)" stroke="rgba(41,128,185,.4)" stroke-width="1.5"/>
+          <text x="57" y="40" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#7ec8ff" font-weight="bold">CPU</text>
+          <text x="57" y="52" text-anchor="middle" font-family="Tahoma" font-size="7" fill="#5a5870">المعالج</text>
+          <rect x="95" y="25" width="55" height="35" rx="5" fill="rgba(39,174,96,.12)" stroke="rgba(39,174,96,.35)" stroke-width="1.5"/>
+          <text x="122" y="40" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#6effa0" font-weight="bold">RAM</text>
+          <text x="122" y="52" text-anchor="middle" font-family="Tahoma" font-size="7" fill="#5a5870">الذاكرة</text>
+          <rect x="160" y="25" width="55" height="35" rx="5" fill="rgba(255,107,43,.1)" stroke="rgba(255,107,43,.3)" stroke-width="1.5"/>
+          <text x="187" y="40" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#ffaa6e" font-weight="bold">SSD</text>
+          <text x="187" y="52" text-anchor="middle" font-family="Tahoma" font-size="7" fill="#5a5870">التخزين</text>
+          <rect x="225" y="25" width="45" height="35" rx="5" fill="rgba(142,68,173,.12)" stroke="rgba(142,68,173,.3)" stroke-width="1.5"/>
+          <text x="247" y="40" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#c39bd3" font-weight="bold">GPU</text>
+          <text x="247" y="52" text-anchor="middle" font-family="Tahoma" font-size="7" fill="#5a5870">الشاشة</text>
+          <line x1="85" y1="42" x2="95" y2="42" stroke="rgba(41,128,185,.4)" stroke-width="1"/>
+          <line x1="150" y1="42" x2="160" y2="42" stroke="rgba(41,128,185,.4)" stroke-width="1"/>
+          <line x1="215" y1="42" x2="225" y2="42" stroke="rgba(41,128,185,.4)" stroke-width="1"/>
+          <text x="150" y="93" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#5a5870">جميع القطع تتصل باللوحة الأم</text>
+        </svg>`,svgLbl:'مكونات الحاسوب الأساسية',
+        q:{q:'ما وظيفة اللوحة الأم (Motherboard)؟',opts:['تخزين الملفات','تشغيل الألعاب','ربط جميع مكونات الحاسوب ببعضها','عرض الصورة على الشاشة'],c:2,exp:'اللوحة الأم هي العمود الفقري للحاسوب التي تربط جميع المكونات (CPU، RAM، SSD، GPU) ببعضها.'}},
+      {title:'وحدات الإدخال والإخراج',text:'<strong>الإدخال:</strong> لوحة المفاتيح والماوس — لإرسال الأوامر للحاسوب.<br><strong>الإخراج:</strong> الشاشة والطابعة — لعرض النتائج للمستخدم.',
+        q:{q:'الطابعة هي وحدة...',opts:['إدخال','إخراج','تخزين','معالجة'],c:1,exp:'الطابعة وحدة إخراج لأنها تعرض (تطبع) النتائج للمستخدم. الإدخال هو ما يُرسل أوامر للحاسوب كالماوس ولوحة المفاتيح.'}},
+      {title:'المعالج CPU',text:'هو <strong>عقل الحاسوب</strong> المسؤول عن تنفيذ جميع العمليات الحسابية والمنطقية. سرعته بالـ<strong>جيجاهيرتز</strong> وعدد <strong>الأنوية</strong> يحدد قوته.',
+        q:{q:'ما وحدة قياس سرعة المعالج (CPU)؟',opts:['ميجابايت','جيجابايت','جيجاهيرتز','واط'],c:2,exp:'سرعة المعالج تُقاس بالجيجاهيرتز (GHz)، وكلما زادت السرعة وزاد عدد الأنوية كان المعالج أقوى.'}},
+      {title:'الذاكرة العشوائية RAM',text:'هي <strong>مخزن مؤقت</strong> للبرامج قيد التشغيل. كلما زاد حجمها (مثلاً 16GB) زادت سرعة الحاسوب في فتح برامج متعددة معاً. عند إيقاف التشغيل تُمسح تلقائياً.',
+        q:{q:'ما الذي يحدث للبيانات في RAM عند إيقاف الحاسوب؟',opts:['تُحفظ تلقائياً في الهارد','تنتقل للسحابة','تُمسح تلقائياً لأنها مؤقتة','تبقى محفوظة'],c:2,exp:'الـ RAM ذاكرة مؤقتة، بمعنى أن بياناتها تُمسح عند إيقاف الحاسوب ولا تُحفظ تلقائياً.'}},
+      {title:'HDD vs SSD',text:'<strong>HDD:</strong> قرص دوار قديم وبطيء ولكنه رخيص وسعته كبيرة.<br><strong>SSD:</strong> حديث وسريع جداً ولكنه أغلى. <strong>استبدال HDD بـ SSD يُحيي الحاسبة القديمة ويجعلها سريعة كالجديدة.</strong>',
+        svg:`<svg viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;background:#07080f;">
+          <rect x="15" y="20" width="120" height="60" rx="8" fill="rgba(192,57,43,.08)" stroke="rgba(192,57,43,.3)" stroke-width="1.5"/>
+          <circle cx="75" cy="50" r="20" fill="none" stroke="rgba(192,57,43,.4)" stroke-width="1.5"/>
+          <circle cx="75" cy="50" r="6" fill="rgba(192,57,43,.3)"/>
+          <text x="75" y="22" text-anchor="middle" font-family="Tahoma" font-size="10" fill="#ff8a8a" font-weight="bold">HDD</text>
+          <text x="75" y="83" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#5a5870">بطيء · قرص دوار</text>
+          <rect x="165" y="20" width="120" height="60" rx="8" fill="rgba(39,174,96,.08)" stroke="rgba(39,174,96,.3)" stroke-width="1.5"/>
+          ${[0,1,2,3,4,5].map(i=>`<rect x="${175+i*18}" y="38" width="12" height="24" rx="2" fill="rgba(39,174,96,.2)" stroke="rgba(39,174,96,.3)" stroke-width="1"/>`).join('')}
+          <text x="225" y="22" text-anchor="middle" font-family="Tahoma" font-size="10" fill="#6effa0" font-weight="bold">SSD</text>
+          <text x="225" y="83" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#5a5870">سريع جداً · بدون أجزاء متحركة</text>
+          <text x="150" y="10" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#c9a84c">VS</text>
+        </svg>`,svgLbl:'الفرق بين HDD و SSD',
+        q:{q:'ما الفائدة الرئيسية من استبدال HDD بـ SSD؟',opts:['يزيد مساحة التخزين','يجعل الحاسوب القديم سريعاً جداً','يقلل استهلاك الكهرباء','يحسّن جودة الصوت'],c:1,exp:'استبدال HDD بـ SSD هو أفضل ترقية للحاسوب القديم؛ لأن الـ SSD أسرع بكثير مما يجعل الحاسوب يشتغل كالجديد.'}},
+      {title:'أنظمة التشغيل OS',text:'<strong>Windows:</strong> الأساس للأعمال الإدارية وهو الأشهر.<br><strong>macOS:</strong> للتصميم والإبداع (أجهزة Apple فقط).<br><strong>Linux:</strong> للمبرمجين والخبراء، مجاني ومفتوح المصدر.',
+        q:{q:'أي نظام تشغيل الأنسب للأعمال الإدارية؟',opts:['Linux','macOS','Windows','Android'],c:2,exp:'Windows هو النظام الأساسي والأشهر للأعمال الإدارية واليومية، بينما macOS للتصميم وLinux للمبرمجين.'}},
+      {title:'الأجهزة الطرفية',text:'<strong>الطابعة:</strong> لطباعة الأسئلة والوثائق.<br><strong>الماسح الضوئي (Scanner):</strong> لتحويل الورق لملفات رقمية.<br><strong>الفلاشة:</strong> لنقل البيانات. يجب فصلها <strong>بأمان</strong> لتجنب تلف الملفات.',
+        q:{q:'ما الجهاز المستخدم لتحويل الورق لملف رقمي؟',opts:['الطابعة','الماسح الضوئي (Scanner)','الفلاشة','الشاشة'],c:1,exp:'الماسح الضوئي (Scanner) هو الجهاز المستخدم لتحويل الأوراق والصور إلى ملفات رقمية على الحاسوب.'}},
+      {title:'تنسيقات الملفات',text:'<strong>.docx</strong> — ملفات Word للتحرير.<br><strong>.pdf</strong> — للمطالعة والثبات (لا يتخربط عند أي شخص).<br><strong>.jpg</strong> — للصور.<br><strong>نصيحة:</strong> يفضل تحويل الملازم لـ PDF لضمان وضوحها عند الطلاب.',
+        q:{q:'لماذا يُفضّل تحويل الملازم لـ PDF قبل إرسالها؟',opts:['لأنها أصغر حجماً','لضمان عدم تخربط الخطوط عند أي شخص','لأنها أسهل في التعديل','لأنها تُطبع أسرع'],c:1,exp:'يُحوَّل إلى PDF لأن هذا التنسيق يضمن عدم تغيّر شكل الملف أو تخربط الخطوط بغض النظر عن جهاز المستقبل.'}},
+    ]},
+
+  phone:{name:'الهاتف — أسرار الأندرويد',icon:'📱',color:'#16a085',bg:'rgba(22,160,133,.1)',border:'rgba(22,160,133,.3)',sub:'٨ دروس في الأندرويد',type:'lessons',
+    items:[
+      {title:'الذاكرة والكاش',text:'الموبايل يحتاج مساحة فارغة للعمل بكفاءة. الفرق بين <strong>ذاكرة الهاتف الداخلية</strong> و<strong>الذاكرة الخارجية (SD Card)</strong>. تنظيف <strong>ملفات الكاش</strong> يُسرّع الجهاز.',q:{q:'ما فائدة تنظيف ملفات الكاش في الهاتف؟',opts:['يحذف الصور','يُسرّع الجهاز ويوفر مساحة','يُحدّث النظام','يشحن البطارية أسرع'],c:1,exp:'الكاش هو بيانات مؤقتة تتراكم وتبطئ الجهاز. تنظيفها يُسرّع الهاتف ويوفر مساحة تخزين.'}},
+      {title:'نظام الأندرويد',text:'يتميز بالـ<strong>انفتاح</strong>؛ يسمح بالتحكم بالملفات ورفعها بسهولة. هو النظام الأنسب للأعمال التعليمية والتقنية. على عكس iOS الذي هو أكثر تقييداً.',q:{q:'ما الميزة الأساسية لنظام الأندرويد؟',opts:['الانغلاق والأمان','الانفتاح والتحكم الكامل بالملفات','سرعة الشاشة','جودة الكاميرا'],c:1,exp:'الأندرويد يتميز بالانفتاح؛ يُتيح للمستخدم التحكم الكامل بالملفات ورفعها وتعديلها بسهولة.'}},
+      {title:'تعطيل التطبيقات',text:'<strong>تطبيقات النظام:</strong> أساسية ولا تُحذف.<br><strong>تطبيقات المستخدم:</strong> تُحذف وتُثبت.<br>تعطيل التطبيقات غير المستخدمة من الإعدادات <strong>يُطيل عمر البطارية</strong> ويُسرّع الجهاز.',q:{q:'ما فائدة تعطيل التطبيقات غير المستخدمة؟',opts:['لا فائدة','يُطيل عمر البطارية ويُسرّع الجهاز','يزيد مساحة التخزين فقط','يُحدّث التطبيقات الأخرى'],c:1,exp:'التطبيقات المفعّلة تعمل في الخلفية وتستهلك البطارية، فتعطيل غير المستخدمة يُطيل عمر البطارية ويُحسّن الأداء.'}},
+      {title:'تحديثات النظام',text:'ضرورية لـ<strong>سد الثغرات الأمنية</strong> وإضافة مميزات جديدة. يجب التحديث عبر <strong>الواي فاي</strong> وبـ<strong>بطارية أكثر من 50%.</strong>',q:{q:'ما الشرطان الضروريان للتحديث الآمن للنظام؟',opts:['إنترنت سريع وهاتف جديد','واي فاي وبطارية أكثر من 50%','بلوتوث مفعّل ومساحة فارغة','سرعة عالية وذاكرة كبيرة'],c:1,exp:'التحديث يحتاج واي فاي (حتى لا يستهلك باقة الإنترنت) وبطارية أكثر من 50% (حتى لا ينطفئ الهاتف أثناء التحديث).'}},
+      {title:'حساب جوجل Gmail',text:'هو <strong>قلب الموبايل</strong>؛ من خلاله تُحفظ الأسماء والصور وتتم استعادة الموبايل في حال ضياعه. <strong>الحفاظ على الباسورد ضرورة قصوى.</strong>',q:{q:'لماذا يُسمى حساب جوجل "قلب الموبايل"؟',opts:['لأنه من شركة جوجل','لأنه ضروري لتشغيل اليوتيوب','لأن من خلاله تُحفظ الجهات والصور وتتم استعادة الهاتف','لأنه مجاني'],c:2,exp:'حساب جوجل هو قلب الموبايل لأنه يحفظ جهات الاتصال والصور والتطبيقات ويُمكّن من استعادة الهاتف في حال ضياعه.'}},
+      {title:'متجر Play Store',text:'هو <strong>المصدر الوحيد الآمن</strong> للتطبيقات. تحميل التطبيقات من مصادر خارجية (APK من مواقع مجهولة) يعرّض الهاتف للاختراق والفيروسات.',q:{q:'لماذا يجب تحميل التطبيقات من Play Store فقط؟',opts:['لأن التطبيقات أرخص فيه','لأنه المصدر الوحيد الآمن المحمي من الفيروسات','لأن التطبيقات أسرع منه','لأن التنزيل أسرع'],c:1,exp:'Play Store هو المصدر الآمن لأن جوجل تفحص التطبيقات قبل نشرها. المصادر الخارجية قد تحتوي فيروسات أو برامج تجسس.'}},
+      {title:'Google Drive (الخزن السحابي)',text:'يُتيح خزن الصور والملفات <strong>على الإنترنت</strong> والوصول إليها من أي مكان في العالم. يحمي البيانات من الضياع عند كسر الهاتف أو سرقته.',q:{q:'ما أهم فائدة لـ Google Drive؟',opts:['تسريع الهاتف','الوصول للملفات من أي مكان وحمايتها من الضياع','تحديث التطبيقات','فتح ملفات PDF'],c:1,exp:'Google Drive يحفظ الملفات في السحابة مما يتيح الوصول إليها من أي جهاز وفي أي مكان، ويحمي البيانات من الضياع.'}},
+      {title:'الأذونات (Permissions)',text:'يجب مراقبة ما يطلبه التطبيق. <strong>مثال خطر:</strong> إذا طلبت آلة حاسبة الدخول للصور أو جهات الاتصال — فهذا مؤشر تجسس ويجب الرفض.',q:{q:'ما المؤشر الذي يدل على أن التطبيق خطير؟',opts:['إذا طلب تحديثاً','إذا كان مجانياً','إذا طلب أذونات لا علاقة لها بوظيفته','إذا كان حجمه كبيراً'],c:2,exp:'التطبيق الخطير هو الذي يطلب أذونات لا علاقة لها بوظيفته، كآلة حاسبة تطلب الدخول للصور وجهات الاتصال — فهذا تجسس.'}},
+    ]},
+
+  politics:{name:'السياسة — المفاهيم الدولية',icon:'🏛️',color:'#d35400',bg:'rgba(211,84,0,.1)',border:'rgba(211,84,0,.3)',sub:'٨ مفاهيم سياسية',type:'lessons',
+    items:[
+      {title:'تعريف الدولة',text:'كيان يتكون من ثلاثة أركان: <strong>أرض محددة</strong> (إقليم)، <strong>شعب مقيم</strong>، <strong>سيادة وسلطة</strong> تدير شؤون المجتمع. بدون أي ركن منها لا تكتمل الدولة.',q:{q:'ما أركان الدولة الثلاثة؟',opts:['جيش وعلم ونشيد','أرض وشعب وسيادة وسلطة','رئيس ووزراء وبرلمان','قانون واقتصاد وجيش'],c:1,exp:'الدولة تتكون من ثلاثة أركان: أرض محددة (إقليم)، شعب مقيم عليها، وسيادة وسلطة تدير شؤون هذا الشعب.'}},
+      {title:'تعريف السياسة',text:'هي <strong>"فن الممكن"</strong> وإدارة شؤون الناس وتوزيع الموارد وتحقيق مصالح الفئات المختلفة بأقل قدر من النزاع.',q:{q:'لماذا تُسمى السياسة "فن الممكن"؟',opts:['لأنها صعبة جداً','لأنها تبحث عن الحلول الممكنة لإدارة الناس بأقل نزاع','لأنها علم وليست فناً','لأنها ترفاهية'],c:1,exp:'السياسة تُسمى فن الممكن لأنها تبحث عن الحلول العملية الممكنة لتحقيق مصالح الناس بأقل قدر من الصراع.'}},
+      {title:'أنظمة الحكم',text:'<strong>الملكي:</strong> بالوراثة — الحاكم يرث السلطة من أبيه.<br><strong>الجمهوري:</strong> بالانتخاب — الشعب يختار حاكمه.<br><strong>الدستور:</strong> العقد الذي ينظم العلاقة بين الحاكم والمحكوم.',q:{q:'ما الفرق بين النظام الملكي والجمهوري؟',opts:['لا فرق','الملكي بالوراثة والجمهوري بالانتخاب','الملكي للأقوياء والجمهوري للضعفاء','الملكي ديني والجمهوري علماني'],c:1,exp:'في النظام الملكي تنتقل السلطة بالوراثة، وفي الجمهوري ينتخب الشعب حاكمه عبر الانتخابات.'}},
+      {title:'فصل السلطات',text:'تقسيم الحكم لثلاث جهات مستقلة: <strong>التشريعية</strong> (البرلمان — يسنّ القوانين)، <strong>التنفيذية</strong> (الحكومة — تُدير)، <strong>القضائية</strong> (المحاكم — تُحاسب). لضمان عدم الاستبداد.',q:{q:'ما وظيفة السلطة القضائية؟',opts:['سن القوانين','إدارة الوزارات','محاسبة المخالفين وإقامة العدل','جمع الضرائب'],c:2,exp:'السلطة القضائية تُحاسب المخالفين وتُقيم العدل بين الناس، وهي مستقلة عن التشريعية والتنفيذية لضمان العدالة.'}},
+      {title:'الدبلوماسية',text:'إدارة العلاقات الدولية عبر <strong>التفاوض والتمثيل الرسمي</strong> بدلاً من الصدام العسكري. تتطلب ذكاءً ولباقة عالية وفهماً للثقافات المختلفة.',q:{q:'ما الهدف الأساسي للدبلوماسية؟',opts:['شن الحروب','إدارة العلاقات الدولية بالتفاوض بدلاً من القتال','جمع المعلومات','فرض العقوبات'],c:1,exp:'الدبلوماسية تهدف إلى إدارة العلاقات بين الدول عبر التفاوض والحوار بدلاً من اللجوء للصراع العسكري.'}},
+      {title:'الأيديولوجيا',text:'منظومة الأفكار (<strong>دينية، رأسمالية، اشتراكية</strong>) التي تُشكّل رؤية الحزب أو الدولة للواقع والمستقبل. هي البوصلة الفكرية لصاحبها.',q:{q:'ما تعريف الأيديولوجيا؟',opts:['نوع من الحكومات','منظومة أفكار تشكّل رؤية الحزب أو الدولة','قانون دولي','نظرية اقتصادية فقط'],c:1,exp:'الأيديولوجيا هي منظومة أفكار (دينية أو سياسية أو اقتصادية) تُحدد رؤية الحزب أو الدولة للعالم والمستقبل.'}},
+      {title:'المواطنة',text:'علاقة قانونية بين <strong>الفرد والدولة</strong>؛ تمنحه <strong>حقوقاً</strong> (تعليم، صحة، حماية) وتلزمه بـ<strong>واجبات</strong> (احترام القانون، الدفاع عن الوطن، دفع الضرائب).',q:{q:'المواطنة علاقة بين...',opts:['الفرد وجيرانه','الفرد والدولة','الدولة والدول الأخرى','الحاكم والوزراء'],c:1,exp:'المواطنة هي علاقة قانونية بين الفرد والدولة؛ تمنحه حقوقاً وتلزمه بواجبات.'}},
+      {title:'الأحزاب السياسية',text:'تجمعات لأفراد يحملون <strong>رؤى متشابهة</strong> ويسعون للوصول للسلطة لتطبيق برامجهم. هي وسيلة الديمقراطية الأساسية في التغيير السلمي.',q:{q:'ما هدف الأحزاب السياسية؟',opts:['جمع المال','الوصول للسلطة لتطبيق برامجهم السياسية','نشر الأخبار','إدارة المدارس'],c:1,exp:'الأحزاب تهدف للوصول للسلطة عبر الانتخابات لتطبيق برامجها السياسية والاقتصادية التي تؤمن بها.'}},
+    ]},
+
+  economy:{name:'الاقتصاد — إدارة المال',icon:'💰',color:'#c9a84c',bg:'rgba(201,168,76,.1)',border:'rgba(201,168,76,.3)',sub:'٨ مفاهيم اقتصادية',type:'lessons',
+    items:[
+      {title:'علم الاقتصاد',text:'يدرس كيفية استغلال <strong>الموارد المحدودة</strong> (مال، زمن، أرض) لإشباع <strong>حاجات البشر المتعددة والمتجددة.</strong> الندرة هي المشكلة الأساسية للاقتصاد.',q:{q:'ما المشكلة الأساسية التي يعالجها علم الاقتصاد؟',opts:['الحروب','ندرة الموارد في مقابل تعدد الحاجات','البطالة فقط','التضخم فقط'],c:1,exp:'المشكلة الأساسية للاقتصاد هي ندرة الموارد (مال، وقت، أرض) في مقابل حاجات البشر المتعددة التي لا تنتهي.'}},
+      {title:'قانون العرض والطلب',text:'المحرك الأساسي للأسعار: <strong>كلما زاد الطلب وقل المعروض ارتفع السعر.</strong> والعكس صحيح. مثال: الماء في الصحراء غالٍ لأن الطلب عليه كبير والعرض قليل.',
+        svg:`<svg viewBox="0 0 280 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;background:#07080f;">
+          <text x="140" y="14" text-anchor="middle" font-family="Tahoma" font-size="10" fill="#c9a84c" font-weight="bold">قانون العرض والطلب</text>
+          <line x1="30" y1="100" x2="30" y2="25" stroke="rgba(201,168,76,.4)" stroke-width="1.5"/>
+          <line x1="30" y1="100" x2="250" y2="100" stroke="rgba(201,168,76,.4)" stroke-width="1.5"/>
+          <text x="20" y="22" font-family="Tahoma" font-size="8" fill="#c9a84c">السعر</text>
+          <text x="240" y="108" font-family="Tahoma" font-size="8" fill="#c9a84c">الكمية</text>
+          <path d="M40,35 Q130,55 240,90" stroke="#27ae60" stroke-width="2" fill="none"/>
+          <text x="245" y="92" font-family="Tahoma" font-size="9" fill="#27ae60">العرض</text>
+          <path d="M40,90 Q130,65 240,30" stroke="#c0392b" stroke-width="2" fill="none"/>
+          <text x="245" y="32" font-family="Tahoma" font-size="9" fill="#ff8a8a">الطلب</text>
+          <circle cx="140" cy="62" r="5" fill="#c9a84c"/>
+          <text x="140" y="78" text-anchor="middle" font-family="Tahoma" font-size="8" fill="#e8c96a">نقطة التوازن</text>
+        </svg>`,svgLbl:'منحنى العرض والطلب',
+        q:{q:'ماذا يحدث للسعر إذا زاد الطلب وقل العرض؟',opts:['ينخفض السعر','يبقى ثابتاً','يرتفع السعر','يختفي المنتج'],c:2,exp:'وفق قانون العرض والطلب، إذا زاد الطلب وقل المعروض فإن السعر يرتفع — وهذا ما نراه في الأسواق يومياً.'}},
+      {title:'التضخم (Inflation)',text:'هو الارتفاع <strong>المستمر</strong> في المستوى العام للأسعار، مما يؤدي لانخفاض <strong>قيمة العملة</strong> بمرور الوقت. يعني: بنفس المبلغ تشتري أقل مما كنت تشتريه سابقاً.',q:{q:'ما أثر التضخم على العملة؟',opts:['يرفع قيمتها','لا يؤثر عليها','يخفّض قيمتها الشرائية','يجعلها أكثر استقراراً'],c:2,exp:'التضخم يُخفّض قيمة العملة الشرائية، بمعنى أنك بنفس المبلغ ستشتري كمية أقل من السلع مع مرور الوقت.'}},
+      {title:'السيولة (Liquidity)',text:'تعبّر عن مدى سهولة تحويل الأصول إلى نقد جاهز: <strong>الكاش (أعلى سيولة)</strong> ← الذهب ← الأسهم ← <strong>العقارات (أقل سيولة)</strong>.',q:{q:'ما الأصل الأعلى سيولة؟',opts:['العقارات','الذهب','الكاش (النقد)','الأسهم'],c:2,exp:'الكاش (النقد) هو الأعلى سيولة لأنه جاهز للاستخدام فوراً. العقارات هي الأقل سيولة لأن بيعها يستغرق وقتاً.'}},
+      {title:'الاستثمار والادخار',text:'<strong>الادخار:</strong> حفظ المال بدون تشغيله.<br><strong>الاستثمار:</strong> تشغيل المال لزيادة قيمته (ذهب، بضاعة، أسهم). الاستثمار يحمي المال من <strong>التضخم</strong>، الادخار لا يحمي منه.',q:{q:'ما الفرق بين الادخار والاستثمار؟',opts:['لا فرق بينهما','الادخار حفظ المال فقط، الاستثمار تشغيله لزيادة قيمته','الادخار للأغنياء والاستثمار للفقراء','الادخار أخطر من الاستثمار'],c:1,exp:'الادخار هو حفظ المال دون تشغيله، والاستثمار هو تشغيله في أصول مثل الذهب أو البضاعة لزيادة قيمته وحمايته من التضخم.'}},
+      {title:'رأس المال (Capital)',text:'لا يقتصر على <strong>المال</strong> فقط، بل يشمل: المعدات والآلات، المباني والمصانع، و<strong>المهارات والخبرات البشرية</strong> — كل ما يُستخدم لإنتاج سلع أو خدمات جديدة.',q:{q:'هل المهارات والخبرات تُعد رأس مال؟',opts:['لا، رأس المال مال فقط','نعم، المهارات والخبرات جزء من رأس المال','أحياناً','فقط إذا كانت مدفوعة الأجر'],c:1,exp:'نعم! رأس المال يشمل المال والمعدات والمباني والمهارات — كل ما يُستخدم لإنتاج سلع أو خدمات ذات قيمة.'}},
+      {title:'الناتج المحلي الإجمالي GDP',text:'هو القيمة الإجمالية لكل ما تنتجه الدولة من <strong>سلع وخدمات</strong> خلال سنة. وهو المقياس الأساسي <strong>لقوة الاقتصاد</strong> ومقارنة الدول ببعضها.',q:{q:'ما الذي يقيسه الناتج المحلي الإجمالي (GDP)؟',opts:['عدد السكان','حجم الجيش','إجمالي ما تنتجه الدولة من سلع وخدمات في سنة','معدل البطالة'],c:2,exp:'الـ GDP يقيس إجمالي ما تنتجه الدولة من سلع وخدمات خلال عام، وهو المقياس الرئيسي لقوة اقتصادها ومقارنته بالدول الأخرى.'}},
+      {title:'القدرة الشرائية',text:'كمية السلع التي يمكن شراؤها <strong>بمبلغ محدد.</strong> تتأثر مباشرة بمعدلات التضخم وقوة العملة. <strong>كلما ارتفع التضخم انخفضت القدرة الشرائية.</strong>',q:{q:'كيف يؤثر التضخم على القدرة الشرائية؟',opts:['يرفعها','لا يؤثر عليها','يُخفّضها','يُضاعفها'],c:2,exp:'التضخم يُخفّض القدرة الشرائية؛ بمعنى أن نفس المبلغ يشتري كمية أقل من السلع عند ارتفاع التضخم.'}},
+    ]},
+
+  proverbs:{name:'أمثال شعبية — حسچة عراقية',icon:'🌾',color:'#e67e22',bg:'rgba(230,126,34,.1)',border:'rgba(230,126,34,.3)',sub:'٨ أمثال عراقية أصيلة',type:'proverbs',
+    items:[
+      {text:'"الـيِـتـعـب.. يِـلـعـب"',meaning:'من يبذل الجهد في البداية (مثل تعلمك اليوم)، سيجني الثمار ويرتاح في النهاية. <strong>الكد اليوم راحة الغد.</strong>'},
+      {text:'"صـفّـي الـنـيـة.. ونـام بـالـثـنـيـة"',meaning:'عندما تتضح الأمور وتكون النوايا صادقة، يطمئن القلب ويسكن القلق. <strong>النية الصادقة تريح صاحبها.</strong>'},
+      {text:'"بـدّل غِـزلـك.. بـتـوزك"',meaning:'يُضرب عند تغيير الأدوات أو الوسائل بأخرى أفضل لتحقيق نتيجة أحسن في العمل.'},
+      {text:'"إلـمـا يِـكـتـبـه الـقـلـم.. تِـقـراه الـعـيـن"',meaning:'عن الفراسة والنباهة وفهم الأمور حتى لو لم تكن مدوّنة رسمياً. <strong>صاحب الفراسة يقرأ ما بين السطور.</strong>'},
+      {text:'"إلـمـا يِـعـرف الـتـدبـيـر.. حـنـطـتـه تـاكـل شـعـيـره"',meaning:'عن أهمية الإدارة والتخطيط؛ بدون تدبير تضيع الموارد القيّمة في أمور تافهة. <strong>التدبير نصف المعيشة.</strong>'},
+      {text:'"مـا ضـاع حـق.. وراه مـطـالـب"',meaning:'تشجيع على الإصرار والمثابرة؛ فالحقوق والمطالب لا تضيع طالما هناك من يسعى خلفها بصبر.'},
+      {text:'"إلـي يـريد الـدح.. مـا يـگـول أح"',meaning:'من يطلب النتائج الجميلة والنجاح، عليه أن يصبر على تعب الطريق دون تذمر. <strong>لا جني بلا زرع.</strong>'},
+      {text:'"إلـمـا يِـعـرف يِـرگـص.. يِـگـول الـگـاع عـوجـة"',meaning:'يُضرب لمن يبرر فشله بالظروف الخارجية بدلاً من الاعتراف بضعف مهارته. <strong>كل ذم للأداة دليل ضعف صاحبها.</strong>'},
+    ]},
+
+  terms:{name:'معجم أبو يوسف — المصطلحات',icon:'📘',color:'#2980b9',bg:'rgba(41,128,185,.1)',border:'rgba(41,128,185,.3)',sub:'٨ مصطلحات عربية وإنجليزية',type:'terms',
+    items:[
+      {en:'Browser',ar:'المتصفح',def:'البرنامج الذي يفتح الإنترنت (مثل جوجل كروم وفايرفوكس).'},
+      {en:'Lobby',ar:'اللوبي',def:'مجموعات ضغط تؤثر على القرارات السياسية خلف الكواليس.'},
+      {en:'Veto',ar:'الفيتو',def:'حق الرفض الذي يمتلكه عضو واحد لإيقاف قرار جماعي (مثل مجلس الأمن).'},
+      {en:'Domain',ar:'الدومين',def:'اسم الموقع الإلكتروني وعنوانه على الإنترنت (مثل: google.com).'},
+      {en:'Backup',ar:'النسخة الاحتياطية',def:'حفظ نسخة ثانية من البيانات في مكان آمن للحماية من الضياع.'},
+      {en:'Inflation',ar:'التضخم',def:'ارتفاع مستمر في الأسعار يؤدي لانخفاض قيمة العملة الشرائية.'},
+      {en:'Monopoly',ar:'الاحتكار',def:'سيطرة جهة واحدة على بضاعة أو خدمة ومنع المنافسة لرفع السعر.'},
+      {en:'Feedback',ar:'التغذية الراجعة',def:'ردود الأفعال والتقييمات التي تساعد في تطوير العمل وتحسينه.'},
+    ]},
+};
+
+// Build home grid
+const SUBJ_ORDER=['quran','fiqh','nahj','computer','phone','politics','economy','proverbs','terms'];
+const grid=document.getElementById('subjGrid');
+SUBJ_ORDER.forEach((key,i)=>{
+  const s=SUBJECTS[key];
+  const d=document.createElement('div');
+  d.className='subj-card';
+  d.style=`animation-delay:${i*.06}s;border-color:${s.border};`;
+  d.innerHTML=`<span class="sc-ic">${s.icon}</span><div class="sc-name">${s.name.split('—')[0].trim()}</div><div class="sc-count">${s.sub}</div>`;
+  d.onclick=()=>openSubj(key);
+  grid.appendChild(d);
+});
+
+// Quiz state per lesson
+const quizState={};
+
+function openSubj(key){
+  const s=SUBJECTS[key];
+  if(!s)return;
+  document.getElementById('subjectIcon').textContent=s.icon;
+  document.getElementById('subjectTitle').textContent=s.name;
+  document.getElementById('subjectSub').textContent=s.sub;
+  const body=document.getElementById('subjectBody');
+  body.innerHTML='';
+
+  if(s.type==='lessons'){
+    s.items.forEach((item,idx)=>{
+      const card=document.createElement('div');
+      card.className='lesson-card';
+      card.style=`animation-delay:${idx*.05}s;border-color:${s.border};`;
+      const qid=`${key}_${idx}`;
+      let svgHtml=item.svg?`<div class="svg-wrap">${item.svg}<div class="svg-lbl">${item.svgLbl||''}</div></div>`:'';
+      card.innerHTML=`
+        <div class="lc-header" onclick="toggleLesson(this.parentElement)">
+          <div class="lc-num" style="background:linear-gradient(135deg,${s.color},${s.color}aa)">${toAr(idx+1)}</div>
+          <div class="lc-title">${item.title}</div>
+          <span class="lc-arr">›</span>
+        </div>
+        <div class="lc-body">
+          ${item.aya?`<div class="aya-box"><div class="aya-text">${item.aya}</div></div>`:''}
+          ${svgHtml}
+          <div class="lesson-text">${item.text}</div>
+          ${item.q?`<div class="quiz-btn-wrap"><button class="quiz-trigger" onclick="showQuiz('${qid}',this)" style="background:linear-gradient(135deg,${s.color},${s.color}bb)">🎯 اختبر نفسك</button></div><div id="qa_${qid}" class="quiz-area" style="display:none"></div>`:''}
+        </div>`;
+      body.appendChild(card);
+    });
+  } else if(s.type==='hikam'){
+    s.items.forEach((item,idx)=>{
+      const qid=`${key}_${idx}`;
+      const card=document.createElement('div');
+      card.className='hikma-card';
+      card.style=`animation-delay:${idx*.05}s;border-color:${s.border};`;
+      card.innerHTML=`
+        <div class="hk-num">الحكمة ${toAr(idx+1)}</div>
+        <div class="hk-arabic">${item.arabic}</div>
+        <div class="hk-meaning">${item.meaning}</div>
+        ${item.q?`<div class="quiz-btn-wrap" style="margin-top:10px;"><button class="quiz-trigger" onclick="showQuiz('${qid}',this)" style="background:linear-gradient(135deg,${s.color},${s.color}bb)">🎯 اختبر نفسك</button></div><div id="qa_${qid}" class="quiz-area" style="display:none"></div>`:''}`;
+      body.appendChild(card);
+    });
+  } else if(s.type==='proverbs'){
+    s.items.forEach((item,idx)=>{
+      const card=document.createElement('div');
+      card.className='proverb-card';
+      card.style=`animation-delay:${idx*.05}s;border-color:${s.border};`;
+      card.innerHTML=`<div class="pv-num">المثل ${toAr(idx+1)}</div><div class="pv-text">${item.text}</div><div class="pv-mean">${item.meaning}</div>`;
+      body.appendChild(card);
+    });
+  } else if(s.type==='terms'){
+    s.items.forEach((item,idx)=>{
+      const card=document.createElement('div');
+      card.className='term-card';
+      card.style=`animation-delay:${idx*.05}s;border-color:${s.border};`;
+      card.innerHTML=`<div class="term-en">${item.en}</div><div><div class="term-ar">${item.ar}</div><div class="term-def">${item.def}</div></div>`;
+      body.appendChild(card);
+    });
+  }
+
+  ['scHome'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('scSubject').classList.add('active');
+  document.getElementById('scSubject').scrollTop=0;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const tabMap={quran:'tabQ',fiqh:'tabF',nahj:'tabN'};
+  if(tabMap[key])document.getElementById(tabMap[key]).classList.add('active');
+  else document.getElementById('tabM').classList.add('active');
+}
+
+function showQuiz(qid,btn){
+  const [key,idx]=qid.split('_');
+  const s=SUBJECTS[key];
+  const item=s.items[parseInt(idx)];
+  const q=item.q;
+  const area=document.getElementById('qa_'+qid);
+  area.style.display='block';
+  btn.style.display='none';
+  quizState[qid]={answered:false};
+  area.innerHTML=`<div class="q-text">${q.q}</div>
+    <div class="q-opts">${q.opts.map((o,i)=>`<button class="q-opt" onclick="answerQ('${qid}',this,${i},${q.c},'${q.exp.replace(/'/g,"&#39;")}')">${o}</button>`).join('')}</div>
+    <div class="q-result" id="qr_${qid}"></div>
+    <button class="q-next" id="qn_${qid}" onclick="resetQuiz('${qid}','${key}',${idx})">🔄 حاول مجدداً</button>`;
+}
+
+function answerQ(qid,btn,sel,c,exp){
+  if(quizState[qid]?.answered)return;
+  quizState[qid].answered=true;
+  btn.closest('.q-opts').querySelectorAll('.q-opt').forEach((b,i)=>{
+    b.classList.add('dis');
+    if(i===c)b.classList.add('correct');
+    else if(b===btn&&sel!==c)b.classList.add('wrong');
+  });
+  const ok=sel===c;
+  const res=document.getElementById('qr_'+qid);
+  res.style.display='block';
+  res.className='q-result '+(ok?'ok':'no');
+  res.innerHTML=(ok?'🎉 ممتاز! إجابة صحيحة':'😊 خطأ — ')+(ok?'<br>':'') +exp;
+  document.getElementById('qn_'+qid).style.display='block';
+}
+
+function resetQuiz(qid,key,idx){
+  const area=document.getElementById('qa_'+qid);
+  area.style.display='none';
+  const s=SUBJECTS[key];
+  const item=s.items[parseInt(idx)];
+  const q=item.q;
+  quizState[qid]={answered:false};
+  area.innerHTML='';
+  area.style.display='none';
+  // Show button again
+  const btn=area.previousElementSibling?.querySelector('.quiz-trigger');
+  if(btn)btn.style.display='block';
+  showQuiz(qid,btn||{style:{}});
+}
+
+function toggleLesson(card){
+  const was=card.classList.contains('open');
+  card.closest('.content-body').querySelectorAll('.lesson-card').forEach(c=>c.classList.remove('open'));
+  if(!was)card.classList.add('open');
+}
+
+function goHome(){
+  document.getElementById('scSubject').classList.remove('active');
+  document.getElementById('scHome').classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tabHome').classList.add('active');
+}
+
+function toAr(n){return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
+</script>
+</body>
+</html>
